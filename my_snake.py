@@ -1,6 +1,7 @@
-import math
 import random
 import pygame
+import tkinter as tk
+from tkinter import messagebox
 
 
 class Cube(object):
@@ -23,12 +24,12 @@ class Cube(object):
         i = self.pos[0]
         j = self.pos[1]
 
-        pygame.draw.rect(surface, self.color, (i*dis+1, j*dis+1, dis-2, dis-2))
+        pygame.draw.rect(surface, self.color, (i * dis + 1, j * dis + 1, dis - 2, dis - 2))
         if eyes:
-            centre = dis//2
+            centre = dis // 2
             radius = 3
-            circle_middle = (i*dis+centre-radius, j*dis+8)
-            circle_middle_2 = (i*dis+centre-radius*2, j*dis+8)
+            circle_middle = (i * dis + centre - radius, j * dis + 8)
+            circle_middle_2 = (i * dis + centre - radius * 2, j * dis + 8)
             pygame.draw.circle(surface, (0, 0, 0), circle_middle, radius)
             pygame.draw.circle(surface, (0, 0, 0), circle_middle_2, radius)
 
@@ -104,13 +105,13 @@ class Snake(object):
         dx, dy = tail.dirnx, tail.dirny
 
         if dx == 1 and dy == 0:
-            self.body.append(Cube((tail.pos[0]-1, tail.pos[1])))
+            self.body.append(Cube((tail.pos[0] - 1, tail.pos[1])))
         elif dx == -1 and dy == 0:
             self.body.append(Cube((tail.pos[0] + 1, tail.pos[1])))
         elif dx == 0 and dy == 1:
-            self.body.append(Cube((tail.pos[0], tail.pos[1]-1)))
+            self.body.append(Cube((tail.pos[0], tail.pos[1] - 1)))
         elif dx == 0 and dy == -1:
-            self.body.append(Cube((tail.pos[0], tail.pos[1]+1)))
+            self.body.append(Cube((tail.pos[0], tail.pos[1] + 1)))
 
         self.body[-1].dirnx = dx
         self.body[-1].dirny = dy
@@ -157,8 +158,16 @@ def random_snack(rows, item):
             break
     return (x, y)
 
+
 def message_box(subject, content):
-    pass
+    root = tk.Tk()
+    root.attributes("-topmost", True)
+    root.withdraw()
+    messagebox.showinfo(subject, content)
+    try:
+        root.destroy()
+    except:
+        pass
 
 
 def main():
@@ -181,13 +190,11 @@ def main():
             snack = Cube(random_snack(rows, s), color=(0, 255, 0))
 
         for x in range(len(s.body)):
-            if s.body[x].pos in list(map(lambda z:z.pos, s.body[x+1:])):
+            if s.body[x].pos in list(map(lambda z: z.pos, s.body[x + 1:])):
                 print("Score: ", len(s.body))
-                # message_box()
+                message_box("You Lost!", "Play again...")
                 s.reset((10, 10))
                 break
-
-
 
         redraw_window(win)
 
