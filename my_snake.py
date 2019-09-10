@@ -1,6 +1,6 @@
 import random
 import pygame
-import tkinter as tk
+import tkinter
 from tkinter import messagebox
 
 
@@ -160,7 +160,7 @@ def random_snack(rows, item):
 
 
 def message_box(subject, content):
-    root = tk.Tk()
+    root = tkinter.Tk()
     root.attributes("-topmost", True)
     root.withdraw()
     messagebox.showinfo(subject, content)
