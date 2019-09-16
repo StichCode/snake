@@ -85,13 +85,18 @@ class Snake(object):
                 else:
                     c.move(c.dirnx, c.dirny)
 
-    def reset(self, pos):
-        self.head = Cube(pos)
-        self.body = []
-        self.body.append(self.head)
-        self.turns = {}
-        self.dirnx = 0
-        self.dirny = 1
+    def reset(self, pos, new):
+        if new:
+            self.head = Cube(pos)
+            self.body = []
+            self.body.append(self.head)
+            self.turns = {}
+            self.dirnx = 0
+            self.dirny = 1
+        else:
+            # pass
+            from gui import menu
+            menu.play()
 
     def add_cube(self):
         tail = self.body[-1]
@@ -139,11 +144,10 @@ def message_box(subject, content):
     root = tkinter.Tk()
     root.attributes("-topmost", True)
     root.withdraw()
-    messagebox.showinfo(subject, content)
-    try:
-        root.destroy()
-    except:
-        pass
+    # messagebox.showinfo(subject, content)
+    result = messagebox.askquestion(subject, content)
+    root.destroy()
+    return result
 
 
 def main():
@@ -167,12 +171,10 @@ def main():
 
         for x in range(len(s.body)):
             if s.body[x].pos in list(map(lambda z: z.pos, s.body[x + 1:])):
-                print("Score: ", len(s.body))
-                message_box("You Lost!", "Play again...")
-                s.reset((10, 10))
+                answer = False
+                if message_box("You Lost!", f"Your score:{len(s.body)}, You want play again?") == "yes":
+                    answer = True
+                s.reset((random.randrange(rows), random.randrange(rows)), new=answer)
                 break
 
         redraw_window(win)
-
-
-main()
